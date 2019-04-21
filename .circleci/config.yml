@@ -7,9 +7,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install gcc stuff
-          command: 'apt-get install gcc-mingw-w64-x86-64 libsdl2-dev -y'
-      - run:
           name: Install Windows stuff
           command: 'rustup target add x86_64-pc-windows-msvc'
       - run:
