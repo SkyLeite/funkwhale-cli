@@ -53,8 +53,7 @@ jobs:
             -r ${CIRCLE_PROJECT_REPONAME} \
             -c ${CIRCLE_SHA1} \
             -prerelease \
-            $VERSION \
-            ~/funkwhale-cli/target
+            ${VERSION} ~/funkwhale-cli/target
 
 
 workflows:
