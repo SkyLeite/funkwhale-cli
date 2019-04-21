@@ -7,10 +7,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build Windows binary
+          name: Build Windows x86_64 binary
           command: 'cargo build --target x86_64-pc-windows-gnu --release'
       - run:
-          name: Build Linux binary
+          name: Build Linux x86_64 binary
           command: 'cargo build --target x86_64-unknown-linux-gnu --release'
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
