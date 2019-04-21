@@ -47,7 +47,7 @@ jobs:
           name: "Publish pre-release on Github"
           command: |
             VERSION=$(~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete $(echo ${VERSION} | awk '{print $2}') ~/funkwhale-cli/target
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -prerelease -delete $(echo ${VERSION} | awk '{print $2}') ~/funkwhale-cli/target
 
 workflows:
   version: 2
