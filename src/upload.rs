@@ -50,11 +50,11 @@ fn get_library(instance_url: &String, token: &String, library: Option<String>, i
     Ok(library_uuid)
 }
 
-pub fn main(files: Vec<std::path::PathBuf>, library: Option<String>, instance_url: String, token: String, interactive: bool) -> Result<(), Box<std::error::Error>> {
+pub fn main(files: Vec<std::path::PathBuf>, library: Option<String>, instance_url: String, token: String, interactive: bool, timeout: u64) -> Result<(), Box<std::error::Error>> {
     let found_library = get_library(&instance_url, &token, library, interactive);
 
     match found_library {
-        Ok(library) => funkwhale::upload(files, library, instance_url, token),
+        Ok(library) => funkwhale::upload(files, library, instance_url, token, timeout),
         Err(e) => return Err(e),
     }
 }

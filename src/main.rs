@@ -20,7 +20,10 @@ enum Opt {
         instance_url: String,
 
         #[structopt(short = "t", long = "token-file", parse(from_os_str))]
-        token_file: std::path::PathBuf
+        token_file: std::path::PathBuf,
+
+        #[structopt(short = "m", long = "timeout", default_value = "500")]
+        timeout: u64,
     },
 }
 
@@ -32,9 +35,9 @@ fn parse_token_file(path: std::path::PathBuf) -> String {
 fn main() {
     let args = Opt::from_args();
 
-    if let Opt::Upload { interactive, files, library, instance_url, token_file } = args {
+    if let Opt::Upload { interactive, files, library, instance_url, token_file, timeout } = args {
         let token = parse_token_file(token_file);
-        match upload::main(files, library, instance_url, token, interactive) {
+        match upload::main(files, library, instance_url, token, interactive, timeout) {
             Ok(v) => println!("\nUpload successful!"),
             Err(e) => panic!("{}", e),
         }
