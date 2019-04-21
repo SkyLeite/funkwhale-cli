@@ -6,6 +6,8 @@ jobs:
       - image: tomaka/rust-mingw-docker:latest
     steps:
       - checkout
+      - restore_cache:
+          key: project-cache-{{ checksum "Cargo.lock" }}
       - run:
           name: Install Windows stuff
           command: 'rustup target add x86_64-pc-windows-gnu'
@@ -15,11 +17,16 @@ jobs:
       - run:
           name: Build Linux x86_64 binary
           command: 'cargo build --target x86_64-unknown-linux-gnu --release'
+      - save_cache:
+          key: project-cache-{{ checksum "Cargo.lock" }}
+          paths:
+            - "target"
+            - "~/.cargo"
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
           destination: x86_64-unknown-linux-gnu
       - store_artifacts:
-          path: ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli
+          path: ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe
           destination: x86_64-pc-windows-gnu
 
 workflows:
