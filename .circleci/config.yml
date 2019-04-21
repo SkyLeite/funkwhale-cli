@@ -25,15 +25,19 @@ jobs:
       - run:
           name: Chmod Linux binary
           command: 'chmod +x ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli'
+      - run:
+          name: Move binaries
+          command: |
+            mkdir binaries
+            mv ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli binaries/funkwhale-cli-linux-x86_64
+            mv ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe binaries/funkwhale-cli.exe
       - store_artifacts:
-          path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
-      - store_artifacts:
-          path: ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe
+          path: ~/funkwhale-cli/binaries
       - persist_to_workspace:
           root: ~/funkwhale-cli
           paths:
-            - target/x86_64-pc-windows-gnu/release
-            - target/x86_64-unknown-linux-gnu/release
+            - binaries/funkwhale-cli-linux-x86_64
+            - binaries/funkwhale-cli.exe
   make_pre_release:
     docker:
       - image: golang:1.12.4-stretch
@@ -47,7 +51,7 @@ jobs:
           name: "Publish pre-release on Github"
           command: |
             VERSION=$(~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -prerelease -delete $(echo ${VERSION} | awk '{print $2}') ~/funkwhale-cli/target
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -prerelease -delete $(echo ${VERSION} | awk '{print $2}') ~/funkwhale-cli/binaries
 
 workflows:
   version: 2
@@ -61,3 +65,4 @@ workflows:
             branches:
               only:
                 - dev
+                - feature/6-continuous-delivery
