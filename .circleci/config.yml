@@ -36,10 +36,13 @@ jobs:
             - target/x86_64-unknown-linux-gnu/release
   make_pre_release:
     docker:
-      - image: cibuilds/github:0.10
+      - image: golang:1.12.4-stretch
     steps:
       - attach_workspace:
           at: ~/funkwhale-cli
+      - run:
+          name: Install ghr
+          command: "go get -u github.com/tcnksm/ghr"
       - run:
           name: "Publish pre-release on Github"
           command: |
