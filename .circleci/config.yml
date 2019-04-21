@@ -7,14 +7,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup cross
-          command: cargo install cross
-      - run:
           name: Build Windows x86_64 binary
-          command: 'cross build --target x86_64-pc-windows-gnu --release'
+          command: 'cargo build --target x86_64-pc-windows-gnu --release'
       - run:
           name: Build Linux x86_64 binary
-          command: 'cross build --target x86_64-unknown-linux-gnu --release'
+          command: 'cargo build --target x86_64-unknown-linux-gnu --release'
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
           destination: x86_64-unknown-linux-gnu
