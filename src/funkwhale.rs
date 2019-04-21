@@ -1,8 +1,3 @@
-extern crate reqwest;
-extern crate dialoguer;
-extern crate spinners;
-extern crate chrono;
-
 use reqwest::multipart;
 use serde::{Deserialize};
 use spinners::{Spinner, Spinners};

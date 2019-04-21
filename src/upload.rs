@@ -1,5 +1,3 @@
-extern crate dialoguer;
-
 #[path = "./funkwhale.rs"]
 mod funkwhale;
 

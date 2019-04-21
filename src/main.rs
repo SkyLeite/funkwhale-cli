@@ -1,9 +1,3 @@
-extern crate structopt;
-extern crate reqwest;
-extern crate dialoguer;
-extern crate spinners;
-extern crate chrono;
-
 use structopt::StructOpt;
 
 mod upload;
