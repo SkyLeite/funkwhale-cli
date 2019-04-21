@@ -31,7 +31,7 @@ pub fn get_libraries(instance: &str, token: &str) -> Result<Vec<Library>, Box<st
     Ok(resp.results)
 }
 
-pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String, token: String) -> Result<(), Box<std::error::Error>> {
+pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String, token: String, timeout: u64) -> Result<(), Box<std::error::Error>> {
     let filename = &files[0].file_name().unwrap().to_str().unwrap();
     let now = Utc::now();
 
@@ -42,7 +42,10 @@ pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String,
         .file("audio_file", &files[0])?;
 
     let sp = Spinner::new(Spinners::Moon, "Uploading your files. Please wait.".into());
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(timeout))
+        .build()?;
+
     let _resp = client
         .post(&format!("{}/api/v1/uploads/", instance))
         .bearer_auth(token)
