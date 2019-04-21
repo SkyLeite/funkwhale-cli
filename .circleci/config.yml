@@ -24,10 +24,8 @@ jobs:
             - "~/.cargo"
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
-          destination: x86_64-unknown-linux-gnu
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe
-          destination: x86_64-pc-windows-gnu
 
 workflows:
   version: 2
