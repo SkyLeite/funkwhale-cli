@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/funkwhale-cli
     docker:
-      - image: rust:1.34
+      - image: tomaka/rust-mingw-docker:latest
     steps:
       - checkout
       - run:
