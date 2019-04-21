@@ -22,13 +22,47 @@ jobs:
           paths:
             - "target"
             - "~/.cargo"
+      - run:
+          name: Chmod Linux binary
+          command: 'chmod +x ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli'
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
       - store_artifacts:
           path: ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe
+      - persist_to_workspace:
+          root: ~/funkwhale-cli
+          paths:
+            - target/x86_64-pc-windows-gnu/release
+            - target/x86_64-unknown-linux-gnu/release
+  make_pre_release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ~/funkwhale-cli
+      - run:
+          name: "Publish pre-release on Github"
+          command: |
+            VERSION=$(~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli --version)
+            ghr \
+            -t ${GITHUB_TOKEN} \
+            -u ${CIRCLE_PROJECT_USERNAME} \
+            -r ${CIRCLE_PROJECT_REPONAME} \
+            -c ${CIRCLE_SHA1} \
+            -delete ${VERSION} \
+            -prerelease
+
 
 workflows:
   version: 2
   build:
     jobs:
       - build
+      - make_pre_release:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - dev
+                - feature/6-continuous-delivery
