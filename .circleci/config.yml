@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/funkwhale-cli
+    docker:
+      - image: posborne/rust-cross
+    steps:
+      - checkout
+      - run:
+          name: Build Windows binary
+          command: 'cargo build --target x86_64-pc-windows-gnu --release'
+      - run:
+          name: Build Linux binary
+          command: 'cargo build --target x86_64-unknown-linux-gnu --release'
+      - store_artifacts:
+          path: ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli
+          destination: x86_64-unknown-linux-gnu
+      - store_artifacts:
+          path: ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli
+          destination: x86_64-pc-windows-gnu
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
