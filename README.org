@@ -1,0 +1,45 @@
+#+TITLE: README
+#+AUTHOR: Rodrigo Leite <rodrigolf.dev@gmail.com>
+#+EMAIL: rodrigolf.dev@gmail.com
+#+DATE: <2019-04-21 Sun>
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.2.3)
+
+* Funkwhale-Cli
+
+Funkwhale-cli is a command line utility designed to interface with any funkwhale
+instance from the command line.
+
+* Usage
+
+1. Download the latest release [[https://github.com/RodrigoLeiteF/funkwhale-cli/releases/latest][here]]
+2. Run the program :)
+
+** Examples
+
+*** Uploading a file
+
+#+BEGIN_SRC bash
+funkwhale-cli upload -t ~/tokenfile -u https://music.leite.dev -l Default -f focus.mp3
+#+END_SRC
+
+Uploads the file `focus.mp3` to the library `Default` on
+`https://music.leite.dev` with the token file `~/tokenfile`
+
+* Authentication
+
+For security reasons, funkwhale-cli uses a token file for authentication instead
+of command line options. To use any authenticated command, you will need to
+supply the path to one with the `-t` flag.
+
+** How to set up a token file
+
+1. Open your browser and press Ctrl + Shift + I to open the developer console
+2. Go to your instance and log in
+3. Paste the following in the console: =JSON.parse(localStorage.getItem("auth")).auth.token=
+4. Press enter
+5. Copy the output without the quotation marks, paste it on a file and save it
+6. Done! Now, whenever you need to be authenticated for a command, just use the
+   option `-t /path/to/your/file`
