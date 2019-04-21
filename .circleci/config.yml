@@ -11,7 +11,7 @@ jobs:
           command: 'rustup target add x86_64-pc-windows-msvc'
       - run:
           name: Build Windows x86_64 binary
-          command: 'cargo build --linker x86_64-w64-mingw32-gcc --target x86_64-pc-windows-gnu --release'
+          command: 'cargo build --target x86_64-pc-windows-gnu --release'
       - run:
           name: Build Linux x86_64 binary
           command: 'cargo build --target x86_64-unknown-linux-gnu --release'
