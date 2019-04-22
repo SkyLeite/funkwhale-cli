@@ -52,6 +52,20 @@ jobs:
           command: |
             VERSION=$(~/funkwhale-cli/binaries/funkwhale-cli-linux-x86_64 --version)
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -prerelease -delete $(echo v$(echo ${VERSION} | awk '{print $2}')) ~/funkwhale-cli/binaries
+  make_release:
+    docker:
+      - image: golang:1.12.4-stretch
+    steps:
+      - attach_workspace:
+          at: ~/funkwhale-cli
+      - run:
+          name: Install ghr
+          command: "go get -u github.com/tcnksm/ghr"
+      - run:
+          name: "Publish release on Github"
+          command: |
+            VERSION=$(~/funkwhale-cli/binaries/funkwhale-cli-linux-x86_64 --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} $(echo v$(echo ${VERSION} | awk '{print $2}')) ~/funkwhale-cli/binaries
 
 workflows:
   version: 2
@@ -65,3 +79,10 @@ workflows:
             branches:
               only:
                 - dev
+      - make_releas:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
