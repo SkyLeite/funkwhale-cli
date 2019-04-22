@@ -1,7 +1,9 @@
 use reqwest::multipart;
 use serde::{Deserialize};
-use spinners::{Spinner, Spinners};
 use chrono::prelude::*;
+use indicatif::{ProgressBar, ProgressStyle};
+use std::thread;
+use std::sync::mpsc;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct LibraryResponse {
@@ -35,11 +37,23 @@ pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String,
     let now = Utc::now();
     let import_reference = format!("From CLI at {}", now);
     let url = format!("{}/api/v1/uploads/", instance);
-    let total_files = &files.len();
-    let mut current_file = 0;
+    let total_files = files.len();
+
+    let bar = ProgressBar::new(total_files as u64);
+    println!("Uploading files. Please wait.");
+
+    bar.set_style(ProgressStyle::default_bar()
+                    .template(" {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}")
+                    .progress_chars("##-"));
+
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(timeout))
+        .build()?;
 
     for file in &files {
         let filename = file.file_name().unwrap().to_str().unwrap();
+
+        bar.set_message(&format!("Uploading {}", filename));
 
         let form = multipart::Form::new()
             .text("library", library.clone())
@@ -47,22 +61,16 @@ pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String,
             .text("source", format!("upload://{}", filename))
             .file("audio_file", file)?;
 
-        let sp = Spinner::new(Spinners::Moon, "Uploading your files. Please wait.".into());
-        let client = reqwest::Client::builder()
-            .timeout(std::time::Duration::from_secs(timeout))
-            .build()?;
-
         let _resp = client
             .post(&url)
             .bearer_auth(token.clone())
             .multipart(form)
-            .send()?
-            .text()?;
+            .send()?;
 
-        sp.message(format!("Uploaded file {} of {}. Uploading...", &current_file + 1, &total_files));
-        sp.stop();
-        current_file += 1;
+        bar.inc(1);
     }
+    bar.set_message("Finished!");
+    bar.finish();
 
     Ok(())
 }
