@@ -386,7 +386,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "funkwhale-cli"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "dialoguer 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
