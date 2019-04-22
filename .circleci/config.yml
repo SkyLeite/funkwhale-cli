@@ -51,7 +51,8 @@ jobs:
           name: "Publish pre-release on Github"
           command: |
             VERSION=$(~/funkwhale-cli/binaries/funkwhale-cli-linux-x86_64 --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -prerelease $(echo v$(echo ${VERSION} | awk '{print $2}')) ~/funkwhale-cli/binaries
+            FORMATTED_VERSION=$(echo v$(echo ${VERSION} | awk '{print $2}'))
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${FORMATTED_VERSION} -prerelease ${FORMATTED_VERSION} ~/funkwhale-cli/binaries
   make_release:
     docker:
       - image: golang:1.12.4-stretch
@@ -65,7 +66,8 @@ jobs:
           name: "Publish release on Github"
           command: |
             VERSION=$(~/funkwhale-cli/binaries/funkwhale-cli-linux-x86_64 --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} $(echo v$(echo ${VERSION} | awk '{print $2}')) ~/funkwhale-cli/binaries
+            FORMATTED_VERSION=$(echo v$(echo ${VERSION} | awk '{print $2}'))
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${FORMATTED_VERSION} ${FORMATTED_VERSION} ~/funkwhale-cli/binaries
 
 workflows:
   version: 2
