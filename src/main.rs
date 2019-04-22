@@ -10,8 +10,8 @@ enum Opt {
         #[structopt(short = "i", long = "interactive")]
         interactive: bool,
 
-        #[structopt(short = "f", long = "files", parse(from_os_str))]
-        files: Vec<std::path::PathBuf>,
+        #[structopt(short = "f", long = "file", parse(from_os_str))]
+        file: std::path::PathBuf,
 
         #[structopt(short = "l", long = "library")]
         library: Option<String>,
@@ -32,12 +32,30 @@ fn parse_token_file(path: std::path::PathBuf) -> String {
     return file.trim().to_string();
 }
 
+fn parse_file(file: std::path::PathBuf) -> Vec<std::path::PathBuf> {
+    if !file.exists() {
+        panic!("File or directory doesn't exist");
+    }
+
+    if file.is_dir() {
+        return std::fs::read_dir(file)
+            .unwrap()
+            .map(|res| res.unwrap().path())
+            .collect();
+    } else {
+        return vec![file];
+    }
+
+}
+
 fn main() {
     let args = Opt::from_args();
 
-    if let Opt::Upload { interactive, files, library, instance_url, token_file, timeout } = args {
+    if let Opt::Upload { interactive, file, library, instance_url, token_file, timeout } = args {
         let token = parse_token_file(token_file);
-        match upload::main(files, library, instance_url, token, interactive, timeout) {
+        let all_files = parse_file(file);
+
+        match upload::main(all_files, library, instance_url, token, interactive, timeout) {
             Ok(v) => println!("\nUpload successful!"),
             Err(e) => panic!("{}", e),
         }
