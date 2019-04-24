@@ -21,7 +21,7 @@ jobs:
           name: Build Linux x86_64 binary
           command: 'cargo build --target x86_64-unknown-linux-gnu --release'
       - run:
-          name: Build .deb package
+          name: Build Linux x86_64 .deb package
           command: 'cargo deb'
       - save_cache:
           key: project-cache
@@ -36,7 +36,7 @@ jobs:
           command: |
             mkdir binaries
             mv ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli binaries/funkwhale-cli-linux-x86_64
-            mv ~/funkwhale-cli/target/debian/funkwhale*.deb binaries/funkwhale-debian-x86_64.deb
+            mv ~/funkwhale-cli/target/debian/funkwhale*.deb binaries/funkwhale-cli-debian-x86_64.deb
             mv ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe binaries/funkwhale-cli.exe
       - store_artifacts:
           path: ~/funkwhale-cli/binaries
