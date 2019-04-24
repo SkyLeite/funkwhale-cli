@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: project-cache-{{ checksum "Cargo.lock" }}
+          key: project-cache
       - run:
           name: Install Windows stuff
           command: 'rustup target add x86_64-pc-windows-gnu'
@@ -24,7 +24,7 @@ jobs:
           name: Build .deb package
           command: 'cargo deb'
       - save_cache:
-          key: project-cache-{{ checksum "Cargo.lock" }}
+          key: project-cache
           paths:
             - "target"
             - "~/.cargo"
