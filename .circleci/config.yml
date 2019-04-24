@@ -12,11 +12,17 @@ jobs:
           name: Install Windows stuff
           command: 'rustup target add x86_64-pc-windows-gnu'
       - run:
+          name: Install Cargo Deb
+          command: 'cargo install cargo-deb'
+      - run:
           name: Build Windows x86_64 binary
           command: 'cargo rustc --release --target=x86_64-pc-windows-gnu -- -C linker=x86_64-w64-mingw32-gcc'
       - run:
           name: Build Linux x86_64 binary
           command: 'cargo build --target x86_64-unknown-linux-gnu --release'
+      - run:
+          name: Build .deb package
+          command: 'cargo deb'
       - save_cache:
           key: project-cache-{{ checksum "Cargo.lock" }}
           paths:
@@ -30,6 +36,7 @@ jobs:
           command: |
             mkdir binaries
             mv ~/funkwhale-cli/target/x86_64-unknown-linux-gnu/release/funkwhale-cli binaries/funkwhale-cli-linux-x86_64
+            mv ~/funkwhale-cli/target/debian/funkwhale*.deb binaries/funkwhale-debian-x86_64.deb
             mv ~/funkwhale-cli/target/x86_64-pc-windows-gnu/release/funkwhale-cli.exe binaries/funkwhale-cli.exe
       - store_artifacts:
           path: ~/funkwhale-cli/binaries
