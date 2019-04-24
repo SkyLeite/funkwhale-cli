@@ -3,6 +3,9 @@ name = "funkwhale-cli"
 version = "0.5.0"
 authors = ["Rodrigo Leite <rodrigolf.dev@gmail.com>"]
 edition = "2018"
+readme = "README.org"
+license = "GPLv2"
+license-file = "LICENSE"
 
 [dependencies]
 reqwest = "0.9.15"
