@@ -12,6 +12,28 @@
 Funkwhale-cli is a command line utility designed to interface with any funkwhale
 instance from the command line.
 
+* Installing
+
+** Linux
+
+*** Debian / Ubuntu
+
+1. Grab the `.deb` package at https://github.com/RodrigoLeiteF/funkwhale-cli/releases/latest
+2. Install it with `dpkg -i funkwhale-cli-debian-x86_64.deb`
+
+*** Arch
+
+1. Run `yay funkwhale-cli-git`
+
+*** Other distributions
+
+1. Download the latest release at https://github.com/RodrigoLeiteF/funkwhale-cli/releases
+2. Run `chmod +x funkwhale-cli-linux-x86_64` to make it executable
+3. (Optional) Rename the binary with `mv funkwhale-cli-linux-x86_64
+   funkwhale-cli`
+4. (Optional) Move the binary to a directory in your PATH, so you can use it
+   anywhere. `mv funkwhale-cli /usr/bin/funkwhale-cli`
+
 * Usage
 
 1. Download the latest release [[https://github.com/RodrigoLeiteF/funkwhale-cli/releases/latest][here]]
