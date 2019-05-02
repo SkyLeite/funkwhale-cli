@@ -55,8 +55,8 @@ fn parse_file(file: std::path::PathBuf, max_depth: u64) -> Vec<std::path::PathBu
 }
 
 fn main() {
-    let config = config::get_config().unwrap();
     let args = Opt::from_args();
+    let config = config::get_config().unwrap();
 
     if let Opt::Upload {
         interactive,
