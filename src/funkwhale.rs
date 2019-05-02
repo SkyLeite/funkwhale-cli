@@ -1,14 +1,12 @@
-use reqwest::multipart;
-use serde::{Deserialize};
 use chrono::prelude::*;
 use indicatif::{ProgressBar, ProgressStyle};
-use std::thread;
-use std::sync::mpsc;
+use reqwest::multipart;
+use serde::Deserialize;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct LibraryResponse {
     pub count: i32,
-    pub results: Vec<Library>
+    pub results: Vec<Library>,
 }
 
 #[derive(Deserialize, Clone, Debug)]
@@ -33,7 +31,13 @@ pub fn get_libraries(instance: &str, token: &str) -> Result<Vec<Library>, Box<st
     Ok(resp.results)
 }
 
-pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String, token: String, timeout: u64) -> Result<(), Box<std::error::Error>> {
+pub fn upload(
+    files: Vec<std::path::PathBuf>,
+    library: String,
+    instance: String,
+    token: String,
+    timeout: u64,
+) -> Result<(), Box<std::error::Error>> {
     let now = Utc::now();
     let import_reference = format!("From CLI at {}", now);
     let url = format!("{}/api/v1/uploads/", instance);
@@ -42,9 +46,11 @@ pub fn upload(files: Vec<std::path::PathBuf>, library: String, instance: String,
     let bar = ProgressBar::new(total_files as u64);
     println!("Uploading files. Please wait.");
 
-    bar.set_style(ProgressStyle::default_bar()
-                    .template(" {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}")
-                    .progress_chars("##-"));
+    bar.set_style(
+        ProgressStyle::default_bar()
+            .template(" {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}")
+            .progress_chars("##-"),
+    );
 
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(timeout))

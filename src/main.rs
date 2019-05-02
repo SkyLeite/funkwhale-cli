@@ -59,11 +59,27 @@ fn parse_file(file: std::path::PathBuf, max_depth: u64) -> Vec<std::path::PathBu
 fn main() {
     let args = Opt::from_args();
 
-    if let Opt::Upload { interactive, file, library, instance_url, token_file, timeout, max_depth } = args {
+    if let Opt::Upload {
+        interactive,
+        file,
+        library,
+        instance_url,
+        token_file,
+        timeout,
+        max_depth,
+    } = args
+    {
         let token = parse_token_file(token_file);
         let all_files = parse_file(file, max_depth);
 
-        match upload::main(all_files, library, instance_url, token, interactive, timeout) {
+        match upload::main(
+            all_files,
+            library,
+            instance_url,
+            token,
+            interactive,
+            timeout,
+        ) {
             Ok(_v) => println!("\nUpload successful!"),
             Err(e) => panic!("{}", e),
         }
