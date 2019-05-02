@@ -1,6 +1,7 @@
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
+mod config;
 mod upload;
 
 #[derive(StructOpt, Debug)]
@@ -16,9 +17,6 @@ enum Opt {
 
         #[structopt(short = "l", long = "library")]
         library: Option<String>,
-
-        #[structopt(short = "u", long = "instance-url")]
-        instance_url: String,
 
         #[structopt(short = "t", long = "token-file", parse(from_os_str))]
         token_file: std::path::PathBuf,
@@ -57,13 +55,13 @@ fn parse_file(file: std::path::PathBuf, max_depth: u64) -> Vec<std::path::PathBu
 }
 
 fn main() {
+    let config = config::get_config().unwrap();
     let args = Opt::from_args();
 
     if let Opt::Upload {
         interactive,
         file,
         library,
-        instance_url,
         token_file,
         timeout,
         max_depth,
@@ -75,7 +73,7 @@ fn main() {
         match upload::main(
             all_files,
             library,
-            instance_url,
+            config.instance_url,
             token,
             interactive,
             timeout,
