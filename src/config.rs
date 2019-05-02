@@ -38,7 +38,6 @@ pub fn get_config() -> Result<Config, Box<std::error::Error>> {
         std::fs::write(config_file, &config_string).unwrap();
     } else {
         config_string = std::fs::read_to_string(&config_file).unwrap();
-        println!("{:?}", config_file);
     }
 
     let config: Config = toml::from_str(&config_string).unwrap();
