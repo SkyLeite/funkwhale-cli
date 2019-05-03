@@ -1,5 +1,4 @@
-#[path = "./funkwhale.rs"]
-mod funkwhale;
+use crate::funkwhale;
 
 fn get_library(
     instance_url: &String,
