@@ -29,7 +29,6 @@ pub fn get_token(
     username: &str,
     password: &str,
 ) -> Result<String, Box<std::error::Error>> {
-    println!("{:?}", instance);
     let client = reqwest::Client::new();
     let mut body = std::collections::HashMap::new();
     body.insert("username", &username);
