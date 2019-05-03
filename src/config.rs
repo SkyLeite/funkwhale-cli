@@ -2,8 +2,7 @@ use directories;
 use serde::{Deserialize, Serialize};
 use toml;
 
-#[path = "./funkwhale.rs"]
-mod funkwhale;
+use crate::funkwhale;
 
 #[derive(Deserialize, Serialize)]
 pub struct Config {

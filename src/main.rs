@@ -2,6 +2,7 @@ use structopt::StructOpt;
 use walkdir::WalkDir;
 
 mod config;
+mod funkwhale;
 mod upload;
 
 #[derive(StructOpt, Debug)]
