@@ -19,6 +19,31 @@ pub struct Library {
     pub creation_date: String,
 }
 
+#[derive(Deserialize, Clone, Debug)]
+pub struct TokenResponse {
+    pub token: String,
+}
+
+pub fn get_token(
+    instance: &str,
+    username: &str,
+    password: &str,
+) -> Result<String, Box<std::error::Error>> {
+    println!("{:?}", instance);
+    let client = reqwest::Client::new();
+    let mut body = std::collections::HashMap::new();
+    body.insert("username", &username);
+    body.insert("password", &password);
+
+    let resp: TokenResponse = client
+        .post(&format!("{}/api/v1/token/", instance))
+        .json(&body)
+        .send()?
+        .json()?;
+
+    Ok(resp.token)
+}
+
 pub fn get_libraries(instance: &str, token: &str) -> Result<Vec<Library>, Box<std::error::Error>> {
     let client = reqwest::Client::new();
 

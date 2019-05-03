@@ -18,20 +18,12 @@ enum Opt {
         #[structopt(short = "l", long = "library")]
         library: Option<String>,
 
-        #[structopt(short = "t", long = "token-file", parse(from_os_str))]
-        token_file: std::path::PathBuf,
-
         #[structopt(short = "m", long = "timeout", default_value = "500")]
         timeout: u64,
 
         #[structopt(short = "d", long = "depth", default_value = "5")]
         max_depth: u64,
     },
-}
-
-fn parse_token_file(path: std::path::PathBuf) -> String {
-    let file = std::fs::read_to_string(path).expect("Could not read the token file :(");
-    return file.trim().to_string();
 }
 
 fn parse_file(file: std::path::PathBuf, max_depth: u64) -> Vec<std::path::PathBuf> {
@@ -57,17 +49,16 @@ fn parse_file(file: std::path::PathBuf, max_depth: u64) -> Vec<std::path::PathBu
 fn main() {
     let args = Opt::from_args();
     let config = config::get_config().unwrap();
+    let token = config::get_token(&config.instance_url).unwrap();
 
     if let Opt::Upload {
         interactive,
         file,
         library,
-        token_file,
         timeout,
         max_depth,
     } = args
     {
-        let token = parse_token_file(token_file);
         let all_files = parse_file(file, max_depth);
 
         match upload::main(
