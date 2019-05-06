@@ -49,7 +49,7 @@ pub struct NodeInfoMetadata {
     pub actor_id: String,
 
     #[serde(rename = "supportedUploadExtensions")]
-    pub supported_upload_extensions: Vec<String>,
+    pub supported_upload_extensions: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug)]
