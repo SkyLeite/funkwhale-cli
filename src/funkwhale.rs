@@ -43,6 +43,24 @@ pub fn get_token(
     Ok(resp.token)
 }
 
+#[derive(Deserialize, Debug)]
+pub struct NodeInfoMetadata {
+    #[serde(rename = "actorId")]
+    pub actor_id: String,
+
+    #[serde(rename = "supportedUploadExtensions")]
+    pub supported_upload_extensions: Vec<String>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct NodeInfo {
+    pub version: String,
+
+    #[serde(rename = "openRegistrations")]
+    pub open_registrations: bool,
+    pub metadata: NodeInfoMetadata,
+}
+
 pub fn get_libraries(instance: &str, token: &str) -> Result<Vec<Library>, Box<std::error::Error>> {
     let client = reqwest::Client::new();
 
@@ -53,6 +71,12 @@ pub fn get_libraries(instance: &str, token: &str) -> Result<Vec<Library>, Box<st
         .json()?;
 
     Ok(resp.results)
+}
+
+pub fn get_nodeinfo(instance: &str) -> Result<NodeInfo, Box<std::error::Error>> {
+    let url = format!("{}/api/v1/instance/nodeinfo/2.0", &instance);
+    let result: NodeInfo = reqwest::get(&url)?.json()?;
+    Ok(result)
 }
 
 pub fn upload(

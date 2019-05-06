@@ -61,9 +61,25 @@ fn main() {
     } = args
     {
         let all_files = parse_file(file, max_depth);
+        let allowed_extensions = funkwhale::get_nodeinfo(&config.instance_url)
+            .unwrap()
+            .metadata
+            .supported_upload_extensions;
+
+        let filtered_files = all_files
+            .iter()
+            .cloned()
+            .filter(|file| match file.extension() {
+                Some(extension) => {
+                    return allowed_extensions
+                        .contains(&String::from(extension.to_str().expect("Noo!")));
+                }
+                None => return false,
+            })
+            .collect::<Vec<_>>();
 
         match upload::main(
-            all_files,
+            filtered_files,
             library,
             config.instance_url,
             token,
