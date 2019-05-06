@@ -60,7 +60,28 @@ fn main() {
         max_depth,
     } = args
     {
-        let all_files = parse_file(file, max_depth);
+        let mut all_files = parse_file(file, max_depth);
+        let allowed_extensions = funkwhale::get_nodeinfo(&config.instance_url)
+            .unwrap()
+            .metadata
+            .supported_upload_extensions;
+
+        match allowed_extensions {
+            Some(extensions) => {
+                all_files = all_files
+                    .iter()
+                    .cloned()
+                    .filter(|file| match file.extension() {
+                        Some(extension) => {
+                            return extensions
+                                .contains(&String::from(extension.to_str().expect("Noo!")));
+                        }
+                        None => return false,
+                    })
+                    .collect::<Vec<_>>();
+            }
+            None => {}
+        }
 
         match upload::main(
             all_files,
@@ -72,6 +93,6 @@ fn main() {
         ) {
             Ok(_v) => println!("\nUpload successful!"),
             Err(e) => panic!("{}", e),
-        }
+        };
     }
 }
