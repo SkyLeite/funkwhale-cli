@@ -1,6 +1,6 @@
 [package]
 name = "funkwhale-cli"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Rodrigo Leite <rodrigolf.dev@gmail.com>"]
 edition = "2018"
 readme = "README.org"
