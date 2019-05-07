@@ -13,8 +13,8 @@ enum Opt {
         #[structopt(short = "i", long = "interactive")]
         interactive: bool,
 
-        #[structopt(short = "f", long = "file", parse(from_os_str))]
-        file: std::path::PathBuf,
+        #[structopt(parse(from_os_str), help = "Files to be uploaded")]
+        files: Vec<std::path::PathBuf>,
 
         #[structopt(short = "l", long = "library")]
         library: Option<String>,
@@ -27,24 +27,29 @@ enum Opt {
     },
 }
 
-fn parse_file(file: std::path::PathBuf, max_depth: u64) -> Vec<std::path::PathBuf> {
-    if !file.exists() {
-        panic!("File or directory doesn't exist");
+fn parse_files(files: Vec<std::path::PathBuf>, max_depth: u64) -> Vec<std::path::PathBuf> {
+    if files.len() == 0 {
+        println!("No files were supplied.");
+        std::process::exit(1);
     }
 
-    if file.is_dir() {
-        let files: Vec<std::path::PathBuf> = WalkDir::new(file)
-            .follow_links(true)
-            .max_depth(max_depth as usize)
-            .into_iter()
-            .map(|f| f.ok().unwrap().path().to_path_buf())
-            .filter(|f| f.is_file())
-            .collect();
+    let mut all_files: Vec<std::path::PathBuf> = Vec::new();
+    for file in files {
+        if file.is_dir() {
+            let mut files: Vec<std::path::PathBuf> = WalkDir::new(file)
+                .follow_links(true)
+                .max_depth(max_depth as usize)
+                .into_iter()
+                .map(|f| f.ok().unwrap().path().to_path_buf())
+                .filter(|f| f.is_file())
+                .collect();
 
-        return files;
-    } else {
-        return vec![file];
+            all_files.append(&mut files);
+        } else {
+            all_files.push(file);
+        }
     }
+    return all_files;
 }
 
 fn main() {
@@ -54,13 +59,13 @@ fn main() {
 
     if let Opt::Upload {
         interactive,
-        file,
+        files,
         library,
         timeout,
         max_depth,
     } = args
     {
-        let mut all_files = parse_file(file, max_depth);
+        let mut all_files = parse_files(files, max_depth);
         let allowed_extensions = funkwhale::get_nodeinfo(&config.instance_url)
             .unwrap()
             .metadata
